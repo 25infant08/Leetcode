@@ -1,12 +1,10 @@
 from typing import List
 from collections import deque
-
 class Solution:
     def canMouseWin(self, grid: List[str], catJump: int, mouseJump: int) -> bool:
         R, C = len(grid), len(grid[0])
         N = R * C
         mouse = cat = food = 0
-
         for i in range(R):
             for j in range(C):
                 p = i * C + j
@@ -16,7 +14,6 @@ class Solution:
                     cat = p
                 elif grid[i][j] == 'F':
                     food = p
-
         def moves(p, jump):
             x, y = divmod(p, C)
             res = [p]
@@ -27,31 +24,24 @@ class Solution:
                         break
                     res.append(nx * C + ny)
             return res
-
         mm = [moves(i, mouseJump) for i in range(N)]
         cm = [moves(i, catJump) for i in range(N)]
-
         mp = [[] for _ in range(N)]
         cp = [[] for _ in range(N)]
-
         for i in range(N):
             for j in mm[i]:
                 mp[j].append(i)
             for j in cm[i]:
                 cp[j].append(i)
-
         state = bytearray(N * N * 2)
         degree = bytearray(N * N * 2)
         q = deque()
-
         def idx(m, c, t):
             return (m * N + c) * 2 + t
-
         for m in range(N):
             for c in range(N):
                 degree[idx(m, c, 0)] = len(mm[m])
                 degree[idx(m, c, 1)] = len(cm[c])
-
         for i in range(N):
             if i != food:
                 for t in (0, 1):
@@ -61,11 +51,9 @@ class Solution:
                     q.append((food, i, t))
                     q.append((i, food, t))
                     q.append((i, i, t))
-
         while q:
             m, c, turn = q.popleft()
             winner = state[idx(m, c, turn)]
-
             if turn == 0:
                 for pc in cp[c]:
                     k = idx(m, pc, 1)
@@ -92,5 +80,4 @@ class Solution:
                         if degree[k] == 0:
                             state[k] = 2
                             q.append((pm, c, 0))
-
         return state[idx(mouse, cat, 0)] == 1
