@@ -2,7 +2,6 @@ class Solution:
     def minimumTimeToInitialState(self, word: str, k: int) -> int:
         n = len(word)
         z = [0] * n
-        
         l, r = 0, 0
         for i in range(1, n):
             if i <= r:
@@ -13,6 +12,4 @@ class Solution:
                 return i // k
             if i + z[i] - 1 > r:
                 l, r = i, i + z[i] - 1
-            
-        
         return ceil(n / k)
